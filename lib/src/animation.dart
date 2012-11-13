@@ -34,7 +34,7 @@ abstract class Animation {
   int _pausedFor = 0;
   bool _paused = false;
   bool _stopped = false;
-  Easing easing = Easing.LINEAR;
+  Tween tween = Tween.LINEAR;
 
   Future onComplete;
   Completer _onCompleteCompleter;

@@ -10,7 +10,7 @@ library animation;
 
 import 'dart:html';
 
-part 'src/easing.dart';
+part 'src/tween.dart';
 part 'src/animation.dart';
 part 'src/style_animation.dart';
 part 'src/animation_queue.dart';

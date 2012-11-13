@@ -15,7 +15,7 @@ part of animation;
  *
  * By default, linear interpolation is used, but you may specify another [easing] method to use.
  */
-animate({Element element, duration, Easing easing, Map<String, Object> properties}) {
+animate({Element element, duration, Tween easing, Map<String, Object> properties}) {
   var animation;
 
   // Currently we just have StyleAnimation's, but in the future maybe others.
@@ -27,7 +27,7 @@ animate({Element element, duration, Easing easing, Map<String, Object> propertie
       animation.setProperties(properties);
 
     if (?easing)
-      animation.easing = easing;
+      animation.tween = easing;
 
     if (?duration)
       animation.duration = duration;
