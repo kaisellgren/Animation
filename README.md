@@ -23,6 +23,7 @@ Animate elements on a web page with Dart.
 * Uses `requestAnimationFrame()` instead of `setTimeout()` for optimal performance and smoother animations.
 * TODO: Effects (fade, drop, slide, etc.).
 * TODO: Tweening (ease, ease-in, ease-in-out, cubic bezier, etc.).
+* TODO: Not all usual properties are animatable yet. I'm working on this.
 
 ## Examples
 
