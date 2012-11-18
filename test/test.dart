@@ -6,12 +6,13 @@ import 'package:animation/animation.dart';
 main() {
   var el = query('#box');
 
-  /*var properties = {
-    'left': 1000,
-    'top': 350
+  var properties = {
+    'opacity': 0.9,
+    'left': 1000//,
+    //'backgroundColor': '#fff'
   };
 
-  animate(element: el, properties: properties, duration: 5000);*/
+  animate(element: el, properties: properties, duration: 2000, easingType: EasingType.QUADRATIC_EASY_IN_OUT);
 
   /*var anim = new StyleAnimation(el)
     ..duration = 5000
@@ -39,7 +40,7 @@ main() {
       anim.run();
     });
   });*/
-
+/*
   var anim = new StyleAnimation(el)
     ..duration = 1000
     ..setProperties({
@@ -55,5 +56,5 @@ main() {
 
   var queue = new AnimationQueue()
     ..addAll([anim, anim2])
-    ..run();
+    ..run();*/
 }

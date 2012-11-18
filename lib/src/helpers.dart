@@ -13,9 +13,9 @@ part of animation;
  *
  * You may specify a [duration] either as an instance of [Duration] class or as an integer in milliseconds.
  *
- * By default, linear interpolation is used, but you may specify another [easing] method to use.
+ * By default, linear interpolation is used, but you may specify another [easingType] method to use.
  */
-animate({Element element, duration, Tween easing, Map<String, Object> properties}) {
+animate({Element element, duration, EasingType easingType, Map<String, Object> properties}) {
   var animation;
 
   // Currently we just have StyleAnimation's, but in the future maybe others.
@@ -26,8 +26,8 @@ animate({Element element, duration, Tween easing, Map<String, Object> properties
     if (?properties)
       animation.setProperties(properties);
 
-    if (?easing)
-      animation.tween = easing;
+    if (?easingType)
+      animation.easingType = easingType;
 
     if (?duration)
       animation.duration = duration;

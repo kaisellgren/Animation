@@ -13,6 +13,7 @@ class StyleAnimation extends Animation {
 
   Map<String, Object> toProperties = {};
   Map<String, Object> fromProperties = {};
+  Map<String, Object> currentProperties = {};
   Map<String, String> units = {};
 
   /**
@@ -36,20 +37,39 @@ class StyleAnimation extends Animation {
     // Set "fromProperties".
     element.getComputedStyle("").then((CSSStyleDeclaration style) {
       toProperties.forEach((key, trash) {
-        var CSSValue = style.getPropertyCSSValue(key);
+        var cssValue = style.getPropertyValue(key);
 
-        if (CSSValue.cssValueType == CSSPrimitiveValue.CSS_NUMBER) {
-          // Retrieve the unit and value.
-          const r = const RegExp('([0-9]+)([a-zA-Z]+)');
-          var match = r.firstMatch(CSSValue.cssText);
+        // Different regular expressions to match number values.
+        const numberWithUnitRegExp = const RegExp('^([0-9\.]+)([a-zA-Z]+)\$');
+        const numberWithoutUnitRegExp = const RegExp('^([0-9\.]+)\$');
+        const hexColorRegExp = const RegExp('^#([0-9]+)\$');
+        const rgbRegExp = const RegExp('^rgb\(([0-9]{1,3}),\s*([0-9]{1,3}),\s*([0-9]{1,3})\)\$');
+        const rgbaRegExp = const RegExp('^rgba\(([0-9]{1,3}),\s*([0-9]{1,3}),\s*([0-9]{1,3}),\s*([0-9\.]+)\)\$');
+        const textShadowRegExp = const RegExp('^1px 1px 1px rgba()\$');
 
+        var match = numberWithUnitRegExp.firstMatch(cssValue);
+
+        // Number with a unit.
+        if (match != null) {
           var value = match.group(1);
           var unit = match.group(2);
 
-          fromProperties[key] = int.parse(value);
+          fromProperties[key] = double.parse(value); // TODO: What about doubles?
+          currentProperties[key] = double.parse(value);
           units[key] = unit;
         } else {
-          throw new Exception('Cannot animate field "$key", because the value type is not supported.');
+          var match = numberWithoutUnitRegExp.firstMatch(cssValue);
+
+          // Number without a unit.
+          if (match != null) {
+            var value = match.group(1);
+
+            fromProperties[key] = double.parse(value);
+            currentProperties[key] = double.parse(value);
+            units[key] = "";
+          } else {
+            throw new Exception('Cannot animate property "$key", because of its unsupported value "${cssValue}".');
+          }
         }
       });
 
@@ -60,8 +80,11 @@ class StyleAnimation extends Animation {
   stop() {
     super.stop();
 
+    currentProperties = {};
+
     fromProperties.forEach((String key, int value) {
-      element.style.setProperty(key, '${value}px');
+      element.style.setProperty(key, '${value}${units[key]}');
+      currentProperties[key] = value;
     });
   }
 
@@ -92,33 +115,49 @@ class StyleAnimation extends Animation {
     if (_paused || _stopped)
       return;
 
-    var now = new Date.now().millisecondsSinceEpoch;
+    var currentTime = new Date.now().millisecondsSinceEpoch;
 
     // Reduce the time we have been paused for, to correct for the lost time.
-    now -= _pausedFor;
+    currentTime -= _pausedFor;
 
-    // Determine amount of time left.
-    var left = duration - (now - _startTime);
+    // Calculate how much time we have left.
+    var left = duration - (currentTime - _startTime);
 
-    var percentageComplete = 100 - (100 / (duration / left));
-
+    // Perform the animation.
     toProperties.forEach((String key, int value) {
-      // Calculate intermediate values.
-      var intermediateValue = (value - fromProperties[key]) * percentageComplete / 100 + fromProperties[key];
+      var intermediateValue;
 
-      if (value > 0 && intermediateValue > value)
-        intermediateValue = value;
-      if (value < 0 && intermediateValue < value)
-        intermediateValue = value;
+      // If there's still time left, calculate the exact figures.
+      if (left > 0) {
+        var baseValue = fromProperties[key];      // The base/original value.
+        var change    = value - baseValue;        // How much the values differ.
+        var time      = currentTime - _startTime; // How much time has passed.
 
-      element.style.setProperty(key, '${intermediateValue}px');
+        // Calculate tween'ed value.
+        intermediateValue = super._performEasing(time, duration, change, baseValue);
+
+        // Clamps the intermediate value to be within value's range.
+        if (value > 0 && intermediateValue > value)
+          intermediateValue = value;
+        if (value < 0 && intermediateValue < value)
+          intermediateValue = value;
+      }
+
+      // If there is no time left, jump to the last value.
+      else {
+        intermediateValue = value;
+      }
+
+      currentProperties[key] = intermediateValue;
+
+      element.style.setProperty(key, '${intermediateValue}${units[key]}');
     });
 
-    if (left > 0) {
+    // If we still have time left, go on.
+    if (left > 0)
       window.requestAnimationFrame(_advance);
-    } else {
+    else
       _onCompleteCompleter.complete(true);
-    }
 
     // TODO: Fire a "step" event!
   }

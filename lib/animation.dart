@@ -9,8 +9,10 @@
 library animation;
 
 import 'dart:html';
+import 'dart:math';
 
-part 'src/tween.dart';
+part 'src/easing_type.dart';
+part 'src/easing.dart';
 part 'src/animation.dart';
 part 'src/style_animation.dart';
 part 'src/animation_queue.dart';
