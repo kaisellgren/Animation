@@ -1,9 +1,9 @@
 Animation
 ==
 
-Animate elements on a web page with Dart.
+Animate elements on a web page with Dart. Similar to jQuery's `animate()`.
 
-#### Features
+## Features
 
 * Quick and simple animations via the simple `animate()` function.
 * More powerful `StyleAnimation` class for "low level" operations.
@@ -21,9 +21,22 @@ Animate elements on a web page with Dart.
   * Manipulate queue (remove, add).
 * Run multiple animations at the same time (why not?).
 * Uses `requestAnimationFrame()` instead of `setTimeout()` for optimal performance and smoother animations.
-* TODO: Effects (fade, drop, slide, etc.).
-* TODO: Tweening (ease, ease-in, ease-in-out, cubic bezier, etc.).
-* TODO: Not all usual properties are animatable yet. I'm working on this.
+* Plenty of easing methods to use (different sorts of easing in/out/in-out).
+  * Linear.
+  * Quadratic.
+  * Cubic.
+  * Quartic.
+  * Quintic.
+  * Sinusoidal.
+  * Exponential.
+  * Circular.
+
+## Missing features
+##### Effects (fade, drop, slide, etc.)
+Support for effects will come at some point.
+
+##### Color and text-shadow animations
+Currently you can't animate colors or text-shadow, this will change at some point.
 
 ## Examples
 
