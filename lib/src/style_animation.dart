@@ -124,7 +124,7 @@ class StyleAnimation extends Animation {
     var left = duration - (currentTime - _startTime);
 
     // Perform the animation.
-    toProperties.forEach((String key, int value) {
+    toProperties.forEach((String key, value) {
       var intermediateValue;
 
       // If there's still time left, calculate the exact figures.
