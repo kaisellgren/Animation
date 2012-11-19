@@ -53,6 +53,13 @@ abstract class Animation {
   }
 
   /**
+   * Pauses the animation for the given amount of time, and then resumes.
+   */
+  pauseFor(duration) {
+    throw new NotImplementedException('');
+  }
+
+  /**
    * Stops the animation and resets it to the beginning state.
    */
   stop() {
