@@ -6,13 +6,20 @@ import 'package:animation/animation.dart';
 main() {
   var el = query('#box');
 
-  var properties = {
-    'opacity': 0.9,
-    'left': 1000//,
-    //'backgroundColor': '#fff'
-  };
-
-  animate(element: el, properties: properties, duration: 2000, easingType: EasingType.QUADRATIC_EASY_IN_OUT);
+  new AnimationQueue()
+    ..addAll([
+      animate(element: el, properties: {'opacity': 0.2}, duration: 1000, paused: true),
+      animate(element: el, properties: {'opacity': 0.4}, duration: 1000, paused: true),
+      animate(element: el, properties: {'opacity': 0.6}, duration: 1000, paused: true),
+      animate(element: el, properties: {'opacity': 0.8}, duration: 1000, paused: true),
+      animate(element: el, properties: {'opacity': 1.0}, duration: 1000, paused: true),
+      animate(element: el, properties: {'opacity': 0.8}, duration: 1000, paused: true),
+      animate(element: el, properties: {'opacity': 0.6}, duration: 1000, paused: true),
+      animate(element: el, properties: {'opacity': 0.4}, duration: 1000, paused: true),
+    ])
+    ..repeat = -1
+    ..interval = 1000
+    ..run();
 
   /*var anim = new StyleAnimation(el)
     ..duration = 5000

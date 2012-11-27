@@ -10,6 +10,7 @@ library animation;
 
 import 'dart:html';
 import 'dart:math';
+import 'dart:isolate';
 
 part 'src/easing_type.dart';
 part 'src/easing.dart';

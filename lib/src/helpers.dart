@@ -15,7 +15,14 @@ part of animation;
  *
  * By default, linear interpolation is used, but you may specify another [easingType] method to use.
  */
-animate({Element element, duration, EasingType easingType, Map<String, Object> properties}) {
+animate({
+  Element element,
+  duration,
+  EasingType easingType,
+  Map<String, Object> properties,
+  StepCallback onStep,
+  bool paused
+  }) {
   var animation;
 
   // Currently we just have StyleAnimation's, but in the future maybe others.
@@ -32,7 +39,11 @@ animate({Element element, duration, EasingType easingType, Map<String, Object> p
     if (?duration)
       animation.duration = duration;
 
-    animation.run();
+    if (?onStep)
+      animation.onStep = onStep;
+
+    if (!?paused || paused == false)
+      animation.run();
 
     return animation;
   }

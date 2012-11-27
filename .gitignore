@@ -1,3 +1,4 @@
 packages/
 .project
 pubspec.lock
+/lib/docs

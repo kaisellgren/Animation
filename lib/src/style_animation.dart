@@ -30,7 +30,14 @@ class StyleAnimation extends Animation {
    */
   setProperties(properties) {
     toProperties = properties;
+  }
 
+  /**
+   * Calculates the current style and sets from properties.
+   *
+   * This should be called just before the animation starts.
+   */
+  _setFromProperties() {
     var completer = new Completer();
     _propertiesReady = completer.future;
 
@@ -40,12 +47,12 @@ class StyleAnimation extends Animation {
         var cssValue = style.getPropertyValue(key);
 
         // Different regular expressions to match number values.
-        const numberWithUnitRegExp = const RegExp('^([0-9\.]+)([a-zA-Z]+)\$');
-        const numberWithoutUnitRegExp = const RegExp('^([0-9\.]+)\$');
-        const hexColorRegExp = const RegExp('^#([0-9]+)\$');
-        const rgbRegExp = const RegExp('^rgb\(([0-9]{1,3}),\s*([0-9]{1,3}),\s*([0-9]{1,3})\)\$');
-        const rgbaRegExp = const RegExp('^rgba\(([0-9]{1,3}),\s*([0-9]{1,3}),\s*([0-9]{1,3}),\s*([0-9\.]+)\)\$');
-        const textShadowRegExp = const RegExp('^1px 1px 1px rgba()\$');
+        var numberWithUnitRegExp = new RegExp('^([0-9\.]+)([a-zA-Z]+)\$');
+        var numberWithoutUnitRegExp = new RegExp('^([0-9\.]+)\$');
+        var hexColorRegExp = new RegExp('^#([0-9]+)\$');
+        var rgbRegExp = new RegExp('^rgb\(([0-9]{1,3}),\s*([0-9]{1,3}),\s*([0-9]{1,3})\)\$');
+        var rgbaRegExp = new RegExp('^rgba\(([0-9]{1,3}),\s*([0-9]{1,3}),\s*([0-9]{1,3}),\s*([0-9\.]+)\)\$');
+        var textShadowRegExp = new RegExp('^1px 1px 1px rgba()\$');
 
         var match = numberWithUnitRegExp.firstMatch(cssValue);
 
@@ -54,7 +61,7 @@ class StyleAnimation extends Animation {
           var value = match.group(1);
           var unit = match.group(2);
 
-          fromProperties[key] = double.parse(value); // TODO: What about doubles?
+          fromProperties[key] = double.parse(value);
           currentProperties[key] = double.parse(value);
           units[key] = unit;
         } else {
@@ -82,30 +89,37 @@ class StyleAnimation extends Animation {
 
     currentProperties = {};
 
-    fromProperties.forEach((String key, int value) {
-      element.style.setProperty(key, '${value}${units[key]}');
-      currentProperties[key] = value;
+    _setFromProperties();
+
+    _propertiesReady.then((ready) {
+      fromProperties.forEach((String key, value) {
+        element.style.setProperty(key, '${value}${units[key]}');
+        currentProperties[key] = value;
+      });
     });
   }
 
   run() {
-    super.run();
-
     if (_propertiesReady is! Future)
-      throw new Exception('You cannot run this animation without first setting properties to animate to.');
+      _setFromProperties();
 
     // Start the animation when the properties are set.
     _propertiesReady.then((bool ready) {
       if (_paused) {
+        var now = new Date.now().millisecondsSinceEpoch;
+
         _paused = false;
-        _pausedFor += new Date.now().millisecondsSinceEpoch - _pausedAt;
+        _pausedFor += now - _pausedAt;
       }
-      else {
+
+      // Set the start time if first time.
+      if (_startTime == null)
         _startTime = new Date.now().millisecondsSinceEpoch;
-      }
 
       window.requestAnimationFrame(_advance);
     });
+
+    super.run();
   }
 
   /**
@@ -123,6 +137,18 @@ class StyleAnimation extends Animation {
     // Calculate how much time we have left.
     var left = duration - (currentTime - _startTime);
 
+    if (onStep != null) {
+      var percentage = 100 - (100 / (duration / left));
+
+      // Clamp.
+      if (percentage > 100)
+        percentage = 100;
+      else if (percentage < 0)
+        percentage = 0;
+
+      onStep(this, percentage);
+    }
+
     // Perform the animation.
     toProperties.forEach((String key, value) {
       var intermediateValue;
@@ -137,10 +163,17 @@ class StyleAnimation extends Animation {
         intermediateValue = super._performEasing(time, duration, change, baseValue);
 
         // Clamps the intermediate value to be within value's range.
-        if (value > 0 && intermediateValue > value)
-          intermediateValue = value;
-        if (value < 0 && intermediateValue < value)
-          intermediateValue = value;
+        if (baseValue > value) {
+          if (value > 0 && intermediateValue < value)
+            intermediateValue = value;
+          if (value < 0 && intermediateValue > value)
+            intermediateValue = value;
+        } else {
+          if (value > 0 && intermediateValue > value)
+            intermediateValue = value;
+          if (value < 0 && intermediateValue < value)
+            intermediateValue = value;
+        }
       }
 
       // If there is no time left, jump to the last value.
@@ -157,7 +190,7 @@ class StyleAnimation extends Animation {
     if (left > 0)
       window.requestAnimationFrame(_advance);
     else
-      _onCompleteCompleter.complete(true);
+      onComplete();
 
     // TODO: Fire a "step" event!
   }

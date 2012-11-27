@@ -8,8 +8,12 @@
 
 part of animation;
 
+typedef void StepCallback(Animation anim, double percentage);
+typedef void CompleteCallback();
+
 abstract class Animation {
   int _duration = 500;
+  int _originalDuration;
 
   /**
    * Returns the duration of this animation in milliseconds.
@@ -27,6 +31,8 @@ abstract class Animation {
 
     if (duration is int)
       _duration = duration;
+
+    _originalDuration = _duration;
   }
 
   int _startTime;
@@ -36,13 +42,9 @@ abstract class Animation {
   bool _stopped = false;
   EasingType easingType = EasingType.LINEAR;
 
-  Future onComplete;
-  Completer _onCompleteCompleter;
+  StepCallback onStep;
 
-  Animation() {
-    _onCompleteCompleter = new Completer();
-    onComplete = _onCompleteCompleter.future;
-  }
+  CompleteCallback onComplete;
 
   /**
    * Pauses the animation.
@@ -53,10 +55,15 @@ abstract class Animation {
   }
 
   /**
-   * Pauses the animation for the given amount of time, and then resumes.
+   * Pauses the animation for the given [duration], and then resumes.
+   *
+   * [duration] can either be in milliseconds or an instance of [Duration].
    */
   pauseFor(duration) {
-    throw new NotImplementedException('');
+    pause();
+    new Timer(duration, (t) {
+      run();
+    });
   }
 
   /**
@@ -66,7 +73,7 @@ abstract class Animation {
     _paused = false;
     _pausedAt = 0;
     _pausedFor = 0;
-    _startTime = 0;
+    _startTime = null;
     _stopped = true;
   }
 
@@ -74,28 +81,36 @@ abstract class Animation {
    * Completes the animation by setting it to the final state.
    */
   finish() {
-    throw new NotImplementedException('');
+    throw new UnsupportedError('');
   }
 
   /**
    * Fowards the animation by the given [duration].
    *
-   * [duration] can either by in milliseconds or an instance of [Duration].
+   * [duration] can either be in milliseconds or an instance of [Duration].
    *
    * If the current state forwarded by duration exceeds the total duration of the animation,
    * the animation will simply finish and be set to the final state.
    */
   forward(duration) {
-    throw new NotImplementedException('');
+    throw new UnsupportedError('');
   }
 
   /**
    * Delays the animation by [duration].
    *
-   * [duration] can either by in milliseconds or an instance of [Duration].
+   * This means that the animation takes longer.
+   *
+   * [duration] can either be in milliseconds or an instance of [Duration].
    */
   delay(duration) {
-    throw new NotImplementedException('');
+    throw new UnsupportedError('');
+
+    if (duration is Duration)
+      duration = duration.inMilliseconds;
+
+    this.duration += duration;
+    _startTime -= duration * 2;
   }
 
   /**

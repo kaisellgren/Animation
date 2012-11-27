@@ -10,6 +10,9 @@ part of animation;
 
 class AnimationQueue {
   int _position = 0;
+  int interval = 0;
+  int repeat = 0;
+  int _repeatedSoFar = 0;
 
   /**
    * Returns the current "position" -- the nth animation that is taking place.
@@ -50,15 +53,15 @@ class AnimationQueue {
   }
 
   stop() {
-    throw new NotImplementedException('');
+    throw new UnsupportedError('');
   }
 
   pause() {
-    throw new NotImplementedException('');
+    throw new UnsupportedError('');
   }
 
   finish() {
-    throw new NotImplementedException('');
+    throw new UnsupportedError('');
   }
 
   /**
@@ -101,14 +104,37 @@ class AnimationQueue {
   run() {
     if (_position >= _queue.length) {
       // TODO: Fire an event.
+
+      _repeatedSoFar++;
+
+      if (_repeatedSoFar < repeat || repeat == -1) {
+        jump(0);
+        run();
+      }
     } else {
       Animation anim = _queue[_position];
-      anim.onComplete.then((success) {
+      anim.stop();
+
+      anim.onComplete = () {
         _position++;
-        run();
-      });
+
+        _runAfterInterval();
+      };
 
       anim.run();
+    }
+  }
+
+  /**
+   * A helper method which runs the next animation after the interval.
+   */
+  _runAfterInterval() {
+    if (interval > 0) {
+      new Timer(interval, (t) {
+        run();
+      });
+    } else {
+      run();
     }
   }
 }
