@@ -42,7 +42,7 @@ class StyleAnimation extends Animation {
     _propertiesReady = completer.future;
 
     // Set "fromProperties".
-    element.getComputedStyle("").then((CSSStyleDeclaration style) {
+    element.getComputedStyle("").then((CssStyleDeclaration style) {
       toProperties.forEach((key, trash) {
         var cssValue = style.getPropertyValue(key);
 

@@ -49,7 +49,7 @@ class AnimationQueue {
    */
   clear() {
     _queue.clear();
-    position = 0;
+    _position = 0;
   }
 
   stop() {
