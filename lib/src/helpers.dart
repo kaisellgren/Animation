@@ -11,17 +11,12 @@ part of animation;
 /**
  * Performs an animation on the given [element] with the given [properties].
  *
- * You may specify a [duration] either as an instance of [Duration] class or as an integer in milliseconds.
+ * You may specify a [duration] in milliseconds.
  *
  * By default, linear interpolation is used, but you may specify another [easingType] method to use.
  */
-animate(Element element, {
-  duration,
-  EasingType easingType,
-  Map<String, Object> properties,
-  StepCallback onStep,
-  bool paused
-  }) {
+Animation animate(Element element, {int duration, EasingType easingType,
+  Map<String, Object> properties, StepCallback onStep, bool paused}) {
   assert(element != null);
   final animation = new StyleAnimation(element);
 

@@ -13,7 +13,6 @@ typedef void CompleteCallback();
 
 abstract class Animation {
   int _duration = 500;
-  int _originalDuration;
 
   /**
    * Returns the duration of this animation in milliseconds.
@@ -21,18 +20,10 @@ abstract class Animation {
   int get duration => _duration;
 
   /**
-   * Sets the duration for this animation.
-   *
-   * It can be specified either in milliseconds or as an instance of [Duration].
+   * Sets the duration for this animation in milliseconds
    */
-  set duration(duration) {
-    if (duration is Duration)
-      _duration = duration.inMilliseconds;
-
-    if (duration is int)
-      _duration = duration;
-
-    _originalDuration = _duration;
+  set duration(int value) {
+    _duration = value;
   }
 
   int _startTime;
@@ -57,9 +48,9 @@ abstract class Animation {
   /**
    * Pauses the animation for the given [duration], and then resumes.
    *
-   * [duration] can either be in milliseconds or an instance of [Duration].
+   * [duration] is in milliseconds.
    */
-  pauseFor(duration) {
+  pauseFor(int duration) {
     pause();
     new Timer(duration, (t) {
       run();
@@ -87,12 +78,12 @@ abstract class Animation {
   /**
    * Fowards the animation by the given [duration].
    *
-   * [duration] can either be in milliseconds or an instance of [Duration].
+   * [duration] is in milliseconds.
    *
    * If the current state forwarded by duration exceeds the total duration of the animation,
    * the animation will simply finish and be set to the final state.
    */
-  forward(duration) {
+  forward(int duration) {
     throw new UnsupportedError('');
   }
 
@@ -101,13 +92,10 @@ abstract class Animation {
    *
    * This means that the animation takes longer.
    *
-   * [duration] can either be in milliseconds or an instance of [Duration].
+   * [duration] is in milliseconds.
    */
-  delay(duration) {
+  delay(int duration) {
     throw new UnsupportedError('');
-
-    if (duration is Duration)
-      duration = duration.inMilliseconds;
 
     this.duration += duration;
     _startTime -= duration * 2;
