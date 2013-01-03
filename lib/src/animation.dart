@@ -42,7 +42,7 @@ abstract class Animation {
    */
   pause() {
     _paused = true;
-    _pausedAt = new Date.now().millisecondsSinceEpoch;
+    _pausedAt = _nowMilliseconds;
   }
 
   /**

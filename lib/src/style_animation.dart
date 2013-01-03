@@ -108,7 +108,7 @@ class StyleAnimation extends Animation {
     // Start the animation when the properties are set.
     _propertiesReady.then((bool ready) {
       if (_paused) {
-        var now = new Date.now().millisecondsSinceEpoch;
+        var now = _nowMilliseconds;
 
         _paused = false;
         _pausedFor += now - _pausedAt;
@@ -116,7 +116,7 @@ class StyleAnimation extends Animation {
 
       // Set the start time if first time.
       if (_startTime == null)
-        _startTime = new Date.now().millisecondsSinceEpoch;
+        _startTime = _nowMilliseconds;
 
       window.requestAnimationFrame(_advance);
     });
@@ -132,7 +132,7 @@ class StyleAnimation extends Animation {
       return;
     }
 
-    var currentTime = new Date.now().millisecondsSinceEpoch;
+    var currentTime = _nowMilliseconds;
 
     // Reduce the time we have been paused for, to correct for the lost time.
     currentTime -= _pausedFor;
