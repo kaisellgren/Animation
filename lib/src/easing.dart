@@ -22,7 +22,7 @@ class Easing {
    * Performs a quadratic easy-in.
    */
   static num easeInQuad(num time, num duration, num change, num baseValue) {
-    var time = time / duration;
+    time = time / duration;
 
     return change * time * time + baseValue;
   }
@@ -31,7 +31,7 @@ class Easing {
    * Performs a quadratic easy-out.
    */
   static num easeOutQuad(num time, num duration, num change, num baseValue) {
-    var time = time / duration;
+    time = time / duration;
 
     return -change * time * (time - 2) + baseValue;
   }
@@ -65,7 +65,7 @@ class Easing {
    * Performs a cubic easy-out.
    */
   static num easeOutCubic(num time, num duration, num change, num baseValue) {
-    var time = time / duration;
+    time = time / duration;
 
     time--;
 
@@ -101,7 +101,7 @@ class Easing {
    * Performs a quartic easy-out.
    */
   static num easeOutQuartic(num time, num duration, num change, num baseValue) {
-    var time = time / duration;
+    time = time / duration;
 
     time--;
 
@@ -137,7 +137,7 @@ class Easing {
    * Performs a quintic easy-out.
    */
   static num easeOutQuintic(num time, num duration, num change, num baseValue) {
-    var time = time / duration;
+    time = time / duration;
 
     time--;
 
