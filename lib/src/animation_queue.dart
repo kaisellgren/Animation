@@ -130,9 +130,7 @@ class AnimationQueue {
    */
   _runAfterInterval() {
     if (interval > 0) {
-      new Timer(interval, (t) {
-        run();
-      });
+      window.setTimeout(run, interval);
     } else {
       run();
     }

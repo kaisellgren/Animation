@@ -52,9 +52,7 @@ abstract class Animation {
    */
   pauseFor(int duration) {
     pause();
-    new Timer(duration, (t) {
-      run();
-    });
+    window.setTimeout(run, duration);
   }
 
   /**
