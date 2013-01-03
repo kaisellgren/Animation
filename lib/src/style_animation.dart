@@ -9,12 +9,13 @@
 part of animation;
 
 class StyleAnimation extends Animation {
-  Element element;
+  final Map<String, Object> fromProperties = {};
+  final Map<String, Object> currentProperties = {};
+  final Map<String, String> units = {};
+
+  final Element element;
 
   Map<String, Object> toProperties = {};
-  Map<String, Object> fromProperties = {};
-  Map<String, Object> currentProperties = {};
-  Map<String, String> units = {};
 
   /**
    * Properties are set asynchronously (due to getComputedStyle()).
@@ -87,7 +88,7 @@ class StyleAnimation extends Animation {
   stop() {
     super.stop();
 
-    currentProperties = {};
+    currentProperties.clear();
 
     _setFromProperties();
 
@@ -100,13 +101,14 @@ class StyleAnimation extends Animation {
   }
 
   run() {
-    if (_propertiesReady is! Future)
+    if (_propertiesReady is! Future) {
       _setFromProperties();
+    }
 
     // Start the animation when the properties are set.
     _propertiesReady.then((bool ready) {
       if (_paused) {
-        var now = new Date.now().millisecondsSinceEpoch;
+        var now = _nowMilliseconds;
 
         _paused = false;
         _pausedFor += now - _pausedAt;
@@ -114,7 +116,7 @@ class StyleAnimation extends Animation {
 
       // Set the start time if first time.
       if (_startTime == null)
-        _startTime = new Date.now().millisecondsSinceEpoch;
+        _startTime = _nowMilliseconds;
 
       window.requestAnimationFrame(_advance);
     });
@@ -126,10 +128,11 @@ class StyleAnimation extends Animation {
    * Advances the animation by one step.
    */
   _advance(num highResTime) {
-    if (_paused || _stopped)
+    if (_paused || _stopped) {
       return;
+    }
 
-    var currentTime = new Date.now().millisecondsSinceEpoch;
+    var currentTime = _nowMilliseconds;
 
     // Reduce the time we have been paused for, to correct for the lost time.
     currentTime -= _pausedFor;
@@ -141,10 +144,11 @@ class StyleAnimation extends Animation {
       var percentage = 100 - (100 / (duration / left));
 
       // Clamp.
-      if (percentage > 100)
+      if (percentage > 100) {
         percentage = 100;
-      else if (percentage < 0)
+      } else if (percentage < 0) {
         percentage = 0;
+      }
 
       onStep(this, percentage);
     }
@@ -187,10 +191,11 @@ class StyleAnimation extends Animation {
     });
 
     // If we still have time left, go on.
-    if (left > 0)
+    if (left > 0) {
       window.requestAnimationFrame(_advance);
-    else
+    } else {
       onComplete();
+    }
 
     // TODO: Fire a "step" event!
   }
