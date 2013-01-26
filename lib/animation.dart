@@ -10,6 +10,11 @@ library animation;
 
 import 'dart:html';
 import 'dart:math';
+<<<<<<< Updated upstream
+=======
+import 'dart:isolate';
+import 'dart:async';
+>>>>>>> Stashed changes
 
 part 'src/easing_type.dart';
 part 'src/easing.dart';

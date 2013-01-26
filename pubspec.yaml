@@ -1,7 +1,8 @@
 name: animation
-version: 0.2.3
-description: Animate elements.
+version: 0.2.5
+description: Animate HTML elements.
 author: Kai Sellgren <kaisellgren@gmail.com>
 homepage: http://github.com/kaisellgren/Animation
 dependencies:
   unittest: any
+  browser: any
