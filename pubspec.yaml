@@ -5,4 +5,4 @@ author: Kai Sellgren <kaisellgren@gmail.com>
 homepage: http://github.com/kaisellgren/Animation
 dependencies:
   unittest: any
-  browser: any
+  browser: ">=0.3.1+1 <0.3.2"
