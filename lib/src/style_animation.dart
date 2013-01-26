@@ -101,6 +101,9 @@ class StyleAnimation extends Animation {
   }
 
   run() {
+    // We have to remember that an animation may be created, but not ran immediately.
+    // If it's ran later on, the initial styles may be different, so we defer loading of properties until run() is called.
+
     if (_propertiesReady is! Future) {
       _setFromProperties();
     }
@@ -140,7 +143,7 @@ class StyleAnimation extends Animation {
     // Calculate how much time we have left.
     var left = duration - (currentTime - _startTime);
 
-    if (onStep != null) {
+    if (_onStepController.hasSubscribers) {
       var percentage = 100 - (100 / (duration / left));
 
       // Clamp.
@@ -150,7 +153,10 @@ class StyleAnimation extends Animation {
         percentage = 0;
       }
 
-      onStep(this, percentage);
+      _onStepController.add({
+        'animation': this,
+        'percentage': percentage
+      });
     }
 
     // Perform the animation.
@@ -194,7 +200,7 @@ class StyleAnimation extends Animation {
     if (left > 0) {
       window.requestAnimationFrame(_advance);
     } else {
-      onComplete();
+      _onCompleteController.add(null);
     }
 
     // TODO: Fire a "step" event!

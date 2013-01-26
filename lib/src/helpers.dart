@@ -16,7 +16,7 @@ part of animation;
  * By default, linear interpolation is used, but you may specify another [easingType] method to use.
  */
 Animation animate(Element element, {int duration, EasingType easingType,
-  Map<String, Object> properties, StepCallback onStep, bool paused}) {
+  Map<String, Object> properties, bool paused}) {
   assert(element != null);
   final animation = new StyleAnimation(element);
 
@@ -30,10 +30,6 @@ Animation animate(Element element, {int duration, EasingType easingType,
 
   if (?duration) {
     animation.duration = duration;
-  }
-
-  if (?onStep) {
-    animation.onStep = onStep;
   }
 
   if (!?paused || paused == false) {

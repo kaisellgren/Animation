@@ -14,6 +14,8 @@ class AnimationQueue {
   int repeat = 0;
   int _repeatedSoFar = 0;
 
+  bool _isListeningToComplete = false;
+
   /**
    * Returns the current "position" -- the nth animation that is taking place.
    */
@@ -115,11 +117,15 @@ class AnimationQueue {
       Animation anim = _queue[_position];
       anim.stop();
 
-      anim.onComplete = () {
-        _position++;
+      // TODO: There must be a better way to do this.
+      if (_isListeningToComplete == false) {
+        _isListeningToComplete = true;
+        anim.onComplete.listen((data) {
+          _position++;
 
-        _runAfterInterval();
-      };
+          _runAfterInterval();
+        });
+      }
 
       anim.run();
     }

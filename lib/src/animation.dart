@@ -9,7 +9,6 @@
 part of animation;
 
 typedef void StepCallback(Animation anim, double percentage);
-typedef void CompleteCallback();
 
 abstract class Animation {
   int _duration = 500;
@@ -33,9 +32,18 @@ abstract class Animation {
   bool _stopped = false;
   EasingType easingType = EasingType.LINEAR;
 
-  StepCallback onStep;
+  Stream onStep;
+  Stream onComplete;
+  StreamController _onStepController;
+  StreamController _onCompleteController;
 
-  CompleteCallback onComplete;
+  Animation() {
+    // Setup streams.
+    _onStepController = new StreamController();
+    _onCompleteController = new StreamController();
+    onStep = _onStepController.stream;
+    onComplete = _onCompleteController.stream;
+  }
 
   /**
    * Pauses the animation.
