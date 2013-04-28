@@ -43,17 +43,22 @@ class StyleAnimation extends Animation {
     _propertiesReady = completer.future;
 
     // Set "fromProperties".
-    element.getComputedStyle("").then((CssStyleDeclaration style) {
+    CssStyleDeclaration  style = element.getComputedStyle("");
+
       toProperties.forEach((key, trash) {
         var cssValue = style.getPropertyValue(key);
 
         // Different regular expressions to match number values.
-        var numberWithUnitRegExp = new RegExp('^([0-9\.]+)([a-zA-Z]+)\$');
-        var numberWithoutUnitRegExp = new RegExp('^([0-9\.]+)\$');
+        var numberWithUnitRegExp = new RegExp('^(-?[0-9\.]+)([a-zA-Z]+)\$');
+        var numberWithoutUnitRegExp = new RegExp('^(-?[0-9\.]+)\$');
+
+        /*
+        TODO: Make use of these formats.
         var hexColorRegExp = new RegExp('^#([0-9]+)\$');
         var rgbRegExp = new RegExp('^rgb\(([0-9]{1,3}),\s*([0-9]{1,3}),\s*([0-9]{1,3})\)\$');
         var rgbaRegExp = new RegExp('^rgba\(([0-9]{1,3}),\s*([0-9]{1,3}),\s*([0-9]{1,3}),\s*([0-9\.]+)\)\$');
         var textShadowRegExp = new RegExp('^1px 1px 1px rgba()\$');
+         */
 
         var match = numberWithUnitRegExp.firstMatch(cssValue);
 
@@ -82,7 +87,7 @@ class StyleAnimation extends Animation {
       });
 
       completer.complete(true);
-    });
+
   }
 
   stop() {
@@ -143,7 +148,7 @@ class StyleAnimation extends Animation {
     // Calculate how much time we have left.
     var left = duration - (currentTime - _startTime);
 
-    if (_onStepController.hasSubscribers) {
+    if (_onStepController.hasListener) {
       var percentage = 100 - (100 / (duration / left));
 
       // Clamp.
@@ -168,7 +173,6 @@ class StyleAnimation extends Animation {
         var baseValue = fromProperties[key];      // The base/original value.
         var change    = value - baseValue;        // How much the values differ.
         var time      = currentTime - _startTime; // How much time has passed.
-
         // Calculate tween'ed value.
         intermediateValue = super._performEasing(time, duration, change, baseValue);
 
@@ -192,7 +196,6 @@ class StyleAnimation extends Animation {
       }
 
       currentProperties[key] = intermediateValue;
-
       element.style.setProperty(key, '${intermediateValue}${units[key]}');
     });
 
