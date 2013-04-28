@@ -40,7 +40,7 @@ class AnimationQueue {
   /**
    * Adds every animation in the collection to the queue.
    */
-  addAll(Collection animations) {
+  addAll(List animations) {
     animations.forEach((animation) => _queue.add(animation));
   }
 
@@ -136,7 +136,7 @@ class AnimationQueue {
    */
   _runAfterInterval() {
     if (interval > 0) {
-      window.setTimeout(run, interval);
+      new Timer(new Duration(milliseconds:interval), run);
     } else {
       run();
     }
