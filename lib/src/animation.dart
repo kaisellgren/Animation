@@ -60,7 +60,7 @@ abstract class Animation {
    */
   pauseFor(int duration) {
     pause();
-    window.setTimeout(run, duration);
+    new Timer(new Duration(milliseconds:duration), run);
   }
 
   /**
