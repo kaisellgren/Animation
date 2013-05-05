@@ -1,6 +1,6 @@
 name: animation
-version: 0.3
-description: Animate HTML elements.
+version: 0.3.0
+description: Animate HTML elements similar to jQuery's animate().
 author: Kai Sellgren <kaisellgren@gmail.com>
 homepage: http://github.com/kaisellgren/Animation
 dependencies:
