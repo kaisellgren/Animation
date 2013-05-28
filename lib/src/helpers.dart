@@ -39,4 +39,4 @@ Animation animate(Element element, {int duration, EasingType easingType,
   return animation;
 }
 
-int get _nowMilliseconds => new Date.now().millisecondsSinceEpoch;
+int get _nowMilliseconds => new DateTime.now().millisecondsSinceEpoch;
