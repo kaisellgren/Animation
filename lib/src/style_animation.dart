@@ -196,7 +196,7 @@ class StyleAnimation extends Animation {
       }
 
       currentProperties[key] = intermediateValue;
-      element.style.setProperty(key, '${intermediateValue}${units[key]}');
+      element.style.setProperty(key, '${intermediateValue.round()}${units[key]}');
     });
 
     // If we still have time left, go on.

@@ -15,24 +15,23 @@ part of animation;
  *
  * By default, linear interpolation is used, but you may specify another [easingType] method to use.
  */
-Animation animate(Element element, {int duration, EasingType easingType,
-  Map<String, Object> properties, bool paused}) {
+Animation animate(Element element, {int duration, EasingType easingType, Map<String, Object> properties, bool paused}) {
   assert(element != null);
   final animation = new StyleAnimation(element);
 
-  if (?properties) {
+  if (properties != null) {
     animation.setProperties(properties);
   }
 
-  if (?easingType) {
+  if (easingType != null) {
     animation.easingType = easingType;
   }
 
-  if (?duration) {
+  if (duration != null) {
     animation.duration = duration;
   }
 
-  if (!?paused || paused == false) {
+  if (paused != true) {
     animation.run();
   }
 
