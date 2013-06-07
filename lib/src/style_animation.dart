@@ -180,12 +180,12 @@ class StyleAnimation extends Animation {
         if (baseValue > value) {
           if (value > 0 && intermediateValue < value)
             intermediateValue = value;
-          if (value < 0 && intermediateValue > value)
+          if (value < 0 && intermediateValue < value)
             intermediateValue = value;
         } else {
           if (value > 0 && intermediateValue > value)
             intermediateValue = value;
-          if (value < 0 && intermediateValue < value)
+          if (value < 0 && intermediateValue > value)
             intermediateValue = value;
         }
       }
