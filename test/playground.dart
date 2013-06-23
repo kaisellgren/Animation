@@ -8,24 +8,44 @@ import 'package:animation/animation.dart';
 main() {
   var el = query('#box');
 
-  animate(el, duration: 1000, easing: Easing.LINEAR, properties: {
-    'left': 200
-  });
+  //animate(document.body, duration: 1000, properties: {'scrollTop': 100});
+
+  /*
+  // The first animation moves the box.
+  var anim = new ElementAnimation(el)
+    ..duration = 1000
+    ..properties = {
+      'left': 500,
+      'top': 250
+    };
+
+  // The second animation makes the box taller.
+  var anim2 = new ElementAnimation(el)
+    ..duration = 500
+    ..properties = {
+      'height': 250
+    };
+
+  // Create a queue, add both animations to it and run the queue.
+  var queue = new AnimationQueue()
+    ..addAll([anim, anim2])
+    ..run();*/
+
 
   /*new AnimationQueue()
-  ..addAll([
-    animate(el, properties: {'opacity': 0.2}, duration: 1000, paused: true),
-    animate(el, properties: {'opacity': 0.4}, duration: 1000, paused: true),
-    animate(el, properties: {'opacity': 0.6}, duration: 1000, paused: true),
-    animate(el, properties: {'opacity': 0.8}, duration: 1000, paused: true),
-    animate(el, properties: {'opacity': 1.0}, duration: 1000, paused: true),
-    animate(el, properties: {'opacity': 0.8}, duration: 1000, paused: true),
-    animate(el, properties: {'opacity': 0.6}, duration: 1000, paused: true),
-    animate(el, properties: {'opacity': 0.4}, duration: 1000, paused: true),
-  ])
-  ..repeat = -1
-  ..interval = 1000
-  ..run();*/
+    ..addAll([
+      animate(el, properties: {'opacity': 0.2}, duration: 1000, paused: true),
+      animate(el, properties: {'opacity': 0.4}, duration: 1000, paused: true),
+      animate(el, properties: {'opacity': 0.6}, duration: 1000, paused: true),
+      animate(el, properties: {'opacity': 0.8}, duration: 1000, paused: true),
+      animate(el, properties: {'opacity': 1.0}, duration: 1000, paused: true),
+      animate(el, properties: {'opacity': 0.8}, duration: 1000, paused: true),
+      animate(el, properties: {'opacity': 0.6}, duration: 1000, paused: true),
+      animate(el, properties: {'opacity': 0.4}, duration: 1000, paused: true),
+    ])
+    ..repeat = -1
+    ..interval = 1000
+    ..run();*/
 
   /*var anim = new ElementAnimation(el)
     ..duration = 5000

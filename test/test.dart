@@ -116,8 +116,17 @@ main() {
   });
 
   group('Animations', () {
-    var el = new DivElement();
-    animate(el, duration: 1000, easing: Easing.LINEAR, properties: {'left': 200});
+    test('call onComplete', () {
+      var anim = animate(new DivElement(), duration: 100, easing: Easing.LINEAR, properties: {'left': 200});
+      anim.onComplete.listen(expectAsync1((e) {}));
+    });
 
+    test('call onStep', () {
+      var anim = animate(new DivElement(), duration: 100, easing: Easing.LINEAR, properties: {'left': 200});
+      anim.onStep.listen(expectAsync1((e) {}));
+    });
+
+    test('work without unit', () => animate(new DivElement(), duration: 100, easing: Easing.LINEAR, properties: {'width': 200}));
+    test('work with unit', () => animate(new DivElement(), duration: 100, easing: Easing.LINEAR, properties: {'width': '200px'}));
   });
 }
