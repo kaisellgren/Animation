@@ -118,8 +118,8 @@ class AnimationQueue {
       anim.stop();
 
       // TODO: There must be a better way to do this.
-      if (_isListeningToComplete == false) {
-        _isListeningToComplete = true;
+      if (_isListeningToComplete == false) {        
+        _isListeningToComplete = (_position == (_queue.length - 1));
         anim.onComplete.listen((data) {
           _position++;
 
