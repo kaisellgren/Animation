@@ -30,7 +30,7 @@ abstract class Animation {
   int _pausedFor = 0;
   bool _paused = false;
   bool _stopped = false;
-  EasingType easingType = EasingType.LINEAR;
+  Easing easing = Easing.QUARTIC_EASY_IN_OUT;
 
   Stream onStep;
   Stream onComplete;
@@ -82,6 +82,13 @@ abstract class Animation {
   }
 
   /**
+   * Resets the animation to the initial state, but does not stop the animation.
+   */
+  reset() {
+    throw new UnsupportedError('');
+  }
+
+  /**
    * Fowards the animation by the given [duration].
    *
    * [duration] is in milliseconds.
@@ -119,51 +126,51 @@ abstract class Animation {
    * Performs easing for the given values using the chosen easing type.
    */
   _performEasing(time, duration, change, baseValue) {
-    switch (easingType) {
-      case EasingType.LINEAR:
-        return Easing.linear(time, duration, change, baseValue);
-      case EasingType.QUADRATIC_EASY_IN:
-        return Easing.easeInQuad(time, duration, change, baseValue);
-      case EasingType.QUADRATIC_EASY_OUT:
-        return Easing.easeOutQuad(time, duration, change, baseValue);
-      case EasingType.QUADRATIC_EASY_IN_OUT:
-        return Easing.easeInOutQuad(time, duration, change, baseValue);
-      case EasingType.CUBIC_EASY_IN:
-        return Easing.easeInCubic(time, duration, change, baseValue);
-      case EasingType.CUBIC_EASY_OUT:
-        return Easing.easeOutCubic(time, duration, change, baseValue);
-      case EasingType.CUBIC_EASY_IN_OUT:
-        return Easing.easeInOutCubic(time, duration, change, baseValue);
-      case EasingType.QUARTIC_EASY_IN:
-        return Easing.easeInQuartic(time, duration, change, baseValue);
-      case EasingType.QUARTIC_EASY_OUT:
-        return Easing.easeOutQuartic(time, duration, change, baseValue);
-      case EasingType.QUARTIC_EASY_IN_OUT:
-        return Easing.easeInOutQuartic(time, duration, change, baseValue);
-      case EasingType.QUINTIC_EASY_IN:
-        return Easing.easeInQuintic(time, duration, change, baseValue);
-      case EasingType.QUINTIC_EASY_OUT:
-        return Easing.easeOutQuintic(time, duration, change, baseValue);
-      case EasingType.QUINTIC_EASY_IN_OUT:
-        return Easing.easeInOutQuintic(time, duration, change, baseValue);
-      case EasingType.SINUSOIDAL_EASY_IN:
-        return Easing.easeInSine(time, duration, change, baseValue);
-      case EasingType.SINUSOIDAL_EASY_OUT:
-        return Easing.easeOutSine(time, duration, change, baseValue);
-      case EasingType.SINUSOIDAL_EASY_IN_OUT:
-        return Easing.easeInOutSine(time, duration, change, baseValue);
-      case EasingType.EXPONENTIAL_EASY_IN:
-        return Easing.easeInExponential(time, duration, change, baseValue);
-      case EasingType.EXPONENTIAL_EASY_OUT:
-        return Easing.easeOutExponential(time, duration, change, baseValue);
-      case EasingType.EXPONENTIAL_EASY_IN_OUT:
-        return Easing.easeInOutExponential(time, duration, change, baseValue);
-      case EasingType.CIRCULAR_EASY_IN:
-        return Easing.easeInCircular(time, duration, change, baseValue);
-      case EasingType.CIRCULAR_EASY_OUT:
-        return Easing.easeOutCircular(time, duration, change, baseValue);
-      case EasingType.CIRCULAR_EASY_IN_OUT:
-        return Easing.easeInOutCircular(time, duration, change, baseValue);
+    switch (easing) {
+      case Easing.LINEAR:
+        return EasingEngine.linear(time, duration, change, baseValue);
+      case Easing.QUADRATIC_EASY_IN:
+        return EasingEngine.easeInQuad(time, duration, change, baseValue);
+      case Easing.QUADRATIC_EASY_OUT:
+        return EasingEngine.easeOutQuad(time, duration, change, baseValue);
+      case Easing.QUADRATIC_EASY_IN_OUT:
+        return EasingEngine.easeInOutQuad(time, duration, change, baseValue);
+      case Easing.CUBIC_EASY_IN:
+        return EasingEngine.easeInCubic(time, duration, change, baseValue);
+      case Easing.CUBIC_EASY_OUT:
+        return EasingEngine.easeOutCubic(time, duration, change, baseValue);
+      case Easing.CUBIC_EASY_IN_OUT:
+        return EasingEngine.easeInOutCubic(time, duration, change, baseValue);
+      case Easing.QUARTIC_EASY_IN:
+        return EasingEngine.easeInQuartic(time, duration, change, baseValue);
+      case Easing.QUARTIC_EASY_OUT:
+        return EasingEngine.easeOutQuartic(time, duration, change, baseValue);
+      case Easing.QUARTIC_EASY_IN_OUT:
+        return EasingEngine.easeInOutQuartic(time, duration, change, baseValue);
+      case Easing.QUINTIC_EASY_IN:
+        return EasingEngine.easeInQuintic(time, duration, change, baseValue);
+      case Easing.QUINTIC_EASY_OUT:
+        return EasingEngine.easeOutQuintic(time, duration, change, baseValue);
+      case Easing.QUINTIC_EASY_IN_OUT:
+        return EasingEngine.easeInOutQuintic(time, duration, change, baseValue);
+      case Easing.SINUSOIDAL_EASY_IN:
+        return EasingEngine.easeInSine(time, duration, change, baseValue);
+      case Easing.SINUSOIDAL_EASY_OUT:
+        return EasingEngine.easeOutSine(time, duration, change, baseValue);
+      case Easing.SINUSOIDAL_EASY_IN_OUT:
+        return EasingEngine.easeInOutSine(time, duration, change, baseValue);
+      case Easing.EXPONENTIAL_EASY_IN:
+        return EasingEngine.easeInExponential(time, duration, change, baseValue);
+      case Easing.EXPONENTIAL_EASY_OUT:
+        return EasingEngine.easeOutExponential(time, duration, change, baseValue);
+      case Easing.EXPONENTIAL_EASY_IN_OUT:
+        return EasingEngine.easeInOutExponential(time, duration, change, baseValue);
+      case Easing.CIRCULAR_EASY_IN:
+        return EasingEngine.easeInCircular(time, duration, change, baseValue);
+      case Easing.CIRCULAR_EASY_OUT:
+        return EasingEngine.easeOutCircular(time, duration, change, baseValue);
+      case Easing.CIRCULAR_EASY_IN_OUT:
+        return EasingEngine.easeInOutCircular(time, duration, change, baseValue);
     }
 
     throw new Exception('Could not perform easing. Did you choose a proper easing type?');

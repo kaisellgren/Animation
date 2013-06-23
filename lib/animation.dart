@@ -13,9 +13,9 @@ import 'dart:math';
 import 'dart:isolate';
 import 'dart:async';
 
-part 'src/easing_type.dart';
 part 'src/easing.dart';
+part 'src/easing_engine.dart';
 part 'src/animation.dart';
-part 'src/style_animation.dart';
+part 'src/element_animation.dart';
 part 'src/animation_queue.dart';
 part 'src/helpers.dart';
