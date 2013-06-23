@@ -32,25 +32,19 @@ abstract class Animation {
   bool _stopped = false;
   Easing easing = Easing.QUARTIC_EASY_IN_OUT;
 
-  Stream onStep;
-  Stream onComplete;
-  StreamController _onStepController;
-  StreamController _onCompleteController;
+  StreamController _onStepController = new StreamController.broadcast();
+  StreamController _onCompleteController = new StreamController.broadcast();
+  Stream get onStep => _onStepController.stream;
+  Stream get onComplete => _onCompleteController.stream;
 
-  Animation() {
-    // Setup streams.
-    _onStepController = new StreamController();
-    _onCompleteController = new StreamController();
-    onStep = _onStepController.stream;
-    onComplete = _onCompleteController.stream;
-  }
+  Animation() {}
 
   /**
    * Pauses the animation.
    */
   pause() {
     _paused = true;
-    _pausedAt = _nowMilliseconds;
+    _pausedAt = _getNowMilliseconds;
   }
 
   /**
@@ -60,7 +54,7 @@ abstract class Animation {
    */
   pauseFor(int duration) {
     pause();
-    new Timer(new Duration(milliseconds:duration), run);
+    new Timer(new Duration(milliseconds: duration), run);
   }
 
   /**
@@ -121,6 +115,11 @@ abstract class Animation {
     _paused = false;
     _stopped = false;
   }
+
+  /**
+   * Resumes a paused animation.
+   */
+  resume() => run();
 
   /**
    * Performs easing for the given values using the chosen easing type.

@@ -38,4 +38,4 @@ Animation animate(Element element, {int duration, Easing easing, Map<String, Obj
   return animation;
 }
 
-int get _nowMilliseconds => new DateTime.now().millisecondsSinceEpoch;
+int _getNowMilliseconds() => new DateTime.now().millisecondsSinceEpoch;

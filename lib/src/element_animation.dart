@@ -34,9 +34,11 @@ class ElementAnimation extends Animation {
 
   final Element element;
 
-  bool isInitialized = false;
+  bool _isInitialized = false;
 
   ElementAnimation(this.element) : super();
+
+  set properties(value) => toProperties = value;
 
   /**
    * Calculates the current style and sets [fromProperties].
@@ -44,15 +46,15 @@ class ElementAnimation extends Animation {
    * This should be called just before the animation starts.
    */
   _initializeFromProperties() {
-    if (isInitialized) throw 'Unexpected scenario: element properties should not be initialized more than once.';
+    if (_isInitialized) throw 'Unexpected scenario: element properties should not be initialized more than once.';
 
     CssStyleDeclaration style = element.getComputedStyle("");
 
-    toProperties.forEach((key, _) {
+    new Map.from(toProperties).forEach((key, value) {
       var cssValue = style.getPropertyValue(key);
 
-      // Convert "auto" to the actual value.
-      if (cssValue == 'auto') {
+      // Convert "auto" and "" to the actual value.
+      if (cssValue == 'auto' || cssValue == '') {
         cssValue = _getActualValueForAuto(key);
       }
 
@@ -61,9 +63,14 @@ class ElementAnimation extends Animation {
         throw 'Cannot animate property "$key", because it had initial value of "auto", which is not supported for this type of property. Please specify an initial value before you start animating it.';
       }
 
+      // Empty value.
+      if (cssValue == '') {
+        throw 'Cannot animate property "$key", because the initial value was an empty string "". Please specify an initial value.';
+      }
+
       // Example properties needing a unit: width, height, top, etc.
       if (_doesPropertyNeedUnit(key)) {
-        var match = new RegExp('^(-?[0-9\.]+)([a-zA-Z]+)\$').firstMatch(cssValue);
+        var match = new RegExp(r'^(-?[0-9\.]+)([a-zA-Z]+)$').firstMatch(cssValue);
 
         // There's a unit.
         if (match != null) {
@@ -74,7 +81,7 @@ class ElementAnimation extends Animation {
           currentProperties[key] = double.parse(value);
           units[key] = unit;
         } else {
-          var match = new RegExp('^(-?[0-9\.]+)\$').firstMatch(cssValue);
+          var match = new RegExp(r'^(-?[0-9\.]+)$').firstMatch(cssValue);
 
           // A number without a unit.
           if (match != null) {
@@ -95,6 +102,20 @@ class ElementAnimation extends Animation {
         currentProperties[key] = double.parse(cssValue);
         units[key] = "";
       }
+
+      // If the user specified a to-value with a unit, let's use that as our unit instead.
+      if (value is String) {
+        var match = new RegExp(r'^(-?[0-9\.]+)([a-zA-Z]+)$').firstMatch(value);
+
+        if (match != null) {
+          var value = match.group(1);
+          var unit = match.group(2);
+
+          toProperties[key] = double.parse(value);
+          units[key] = unit;
+        }
+      }
+
       /*
       TODO: Make use of these formats.
       var hexColorRegExp = new RegExp('^#([0-9]+)\$');
@@ -103,16 +124,15 @@ class ElementAnimation extends Animation {
       var textShadowRegExp = new RegExp('^1px 1px 1px rgba()\$');
        */
     });
-print(toProperties);
-    print(fromProperties);
-    print(units);
-    isInitialized = true;
+
+    _isInitialized = true;
   }
 
   stop() {
     super.stop();
 
     currentProperties.clear();
+    _isInitialized = false;
 
     _initializeFromProperties();
 
@@ -123,22 +143,19 @@ print(toProperties);
   }
 
   run() {
-    // We have to remember that an animation may be created, but not ran immediately.
-    // If it's ran later on, the initial styles may be different, so we defer loading of properties until run() is called.
+    // We have to remember that the animation can be created without running immediately.
+    // If it's ran later, the initial styles may be different, so we defer loading of properties until run() is called.
+    if (_isInitialized == false) _initializeFromProperties();
 
-    if (isInitialized == false) _initializeFromProperties();
-
-    // Start the animation when the properties are set.
     if (_paused) {
-      var now = _nowMilliseconds;
+      var now = _getNowMilliseconds();
 
       _paused = false;
       _pausedFor += now - _pausedAt;
     }
 
-    // Set the start time if first time.
-    if (_startTime == null)
-      _startTime = _nowMilliseconds;
+    // Set the start time if this is the first time.
+    if (_startTime == null) _startTime = _getNowMilliseconds();
 
     window.requestAnimationFrame(_advance);
 
@@ -149,11 +166,9 @@ print(toProperties);
    * Advances the animation by one step.
    */
   _advance(num highResTime) {
-    if (_paused || _stopped) {
-      return;
-    }
+    if (_paused || _stopped) return;
 
-    var currentTime = _nowMilliseconds;
+    var currentTime = _getNowMilliseconds();
 
     // Reduce the time we have been paused for, to correct for the lost time.
     currentTime -= _pausedFor;
@@ -186,6 +201,7 @@ print(toProperties);
         var baseValue = fromProperties[key];      // The base/original value.
         var change    = value - baseValue;        // How much the values differ.
         var time      = currentTime - _startTime; // How much time has passed.
+
         // Calculate tween'ed value.
         intermediateValue = super._performEasing(time, duration, change, baseValue);
 
@@ -209,7 +225,14 @@ print(toProperties);
       }
 
       currentProperties[key] = intermediateValue;
-      element.style.setProperty(key, '${intermediateValue.round()}${units[key]}');
+
+      var result = _propertyNeedsPreciseAnimation(key) ? intermediateValue : intermediateValue.round();
+
+      if (_isAnimatableElementProperty(key)) {
+        _setPropertyValue(key, result);
+      } else {
+        element.style.setProperty(key, '${result}${units[key]}');
+      }
     });
 
     // If we still have time left, go on.
@@ -218,8 +241,6 @@ print(toProperties);
     } else {
       _onCompleteController.add(null);
     }
-
-    // TODO: Fire a "step" event!
   }
 
   /**
@@ -247,8 +268,48 @@ print(toProperties);
       case 'bottom':
       case 'left':
         return '0';
+      case 'scrollTop':
+        return '${element.scrollTop}';
+      case 'scrollLeft':
+        return '${element.scrollLeft}';
     }
 
     return 'auto';
+  }
+
+  /**
+   * Returns true if the property requires animation with decimal precision.
+   */
+  bool _propertyNeedsPreciseAnimation(String propertyName) {
+    switch (propertyName) {
+      case 'opacity':
+        return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Returns true if the given property is not a CSS property, but is an animatable element property.
+   */
+  bool _isAnimatableElementProperty(String propertyName) {
+    const props = const ['scrollTop', 'scrollLeft'];
+
+    return props.contains(propertyName);
+  }
+
+  /**
+   * Sets a property value such as scrollTop.
+   */
+  void _setPropertyValue(String propertyName, value) {
+    // TODO: Use mirrors when they land in dart2js?
+    switch (propertyName) {
+      case 'scrollTop':
+        element.scrollTop = value;
+        break;
+      case 'scrollLeft':
+        element.scrollLeft = value;
+        break;
+    }
   }
 }

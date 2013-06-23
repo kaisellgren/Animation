@@ -12,6 +12,7 @@ import 'dart:html';
 import 'dart:math';
 import 'dart:isolate';
 import 'dart:async';
+import 'dart:collection';
 
 part 'src/easing.dart';
 part 'src/easing_engine.dart';
