@@ -1,5 +1,5 @@
 name: animation
-version: 0.5.21
+version: 0.5.22
 description: Animate HTML elements similar to jQuery's animate().
 author: Kai Sellgren <kaisellgren@gmail.com>
 homepage: http://github.com/kaisellgren/Animation
