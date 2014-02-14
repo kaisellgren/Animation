@@ -2,11 +2,14 @@ import 'dart:html';
 import 'dart:async';
 
 import 'package:animation/animation.dart';
+import 'package:animation/effect.dart';
 
 // This file is used to play around with the Animation lib to test things manually.
 
 main() {
   var el = query('#box');
+
+  slideOut(el);
 
   //animate(document.body, duration: 1000, properties: {'scrollTop': 100});
 

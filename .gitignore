@@ -3,3 +3,6 @@ packages
 pubspec.lock
 /lib/docs
 .idea
+/test/*.js
+*.js.deps
+*.js.map

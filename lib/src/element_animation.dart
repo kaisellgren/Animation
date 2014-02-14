@@ -272,6 +272,8 @@ class ElementAnimation extends Animation {
         return '${element.scrollTop}';
       case 'scrollLeft':
         return '${element.scrollLeft}';
+      case 'opacity':
+        return '1';
     }
 
     return 'auto';
