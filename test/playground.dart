@@ -9,7 +9,11 @@ import 'package:animation/effect.dart';
 main() {
   var el = query('#box');
 
-  slideOut(el);
+  //animate(el, properties: {'left': '50px'});
+
+  slideOut(el).onComplete.listen((_) {
+    slideIn(el);
+  });
 
   //animate(document.body, duration: 1000, properties: {'scrollTop': 100});
 
