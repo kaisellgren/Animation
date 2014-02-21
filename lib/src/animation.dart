@@ -103,9 +103,6 @@ abstract class Animation {
    */
   delay(int duration) {
     throw new UnsupportedError('');
-
-    this.duration += duration;
-    _startTime -= duration * 2;
   }
 
   /**
