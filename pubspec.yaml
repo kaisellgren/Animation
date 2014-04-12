@@ -1,11 +1,11 @@
 name: animation
 version: 0.5.23
-description: Animate HTML elements similar to jQuery's animate().
 author: Kai Sellgren <kaisellgren@gmail.com>
+description: Animate HTML elements similar to jQuery's animate().
 homepage: http://github.com/kaisellgren/Animation
 environment:
   sdk: '>=0.8.10+6 <2.0.0'
 dependencies:
-  browser: '>=0.9.0 < 0.10.0'
-dev_dependencies:  
-  unittest: '>=0.9.0 < 0.10.0'
+  browser: '>=0.9.0 <0.11.0'
+dev_dependencies:
+  unittest: '>=0.9.0 <0.10.0'
