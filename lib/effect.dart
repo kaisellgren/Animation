@@ -33,9 +33,9 @@ Element _createWrapper(Element element) {
 
   var parent = element.parent;
 
+  int index = parent.children.indexOf(element);
   wrapper.children.add(element);
-
-  parent.children.add(wrapper);
+  parent.children.insert(index, wrapper);
 
   return wrapper;
 }
